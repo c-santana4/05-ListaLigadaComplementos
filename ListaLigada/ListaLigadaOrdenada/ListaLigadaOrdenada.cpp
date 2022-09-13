@@ -165,9 +165,15 @@ void excluirElemento()
 {
 	int valor;
 	NO* aux;
+	bool encontrado = false;
 
 	cout << "Digite o valor que quer excluir: ";
 	cin >> valor;
+
+	if (primeiro->prox == NULL) {
+		free(primeiro);
+		return;
+	}
 
 	aux = primeiro;
 	while (aux->prox != NULL) {
@@ -176,17 +182,19 @@ void excluirElemento()
 		if (primeiro->valor == valor) {
 			free(primeiro);
 			primeiro = proximo;
-			return;
+			encontrado = true;
+			break;
 		}
 
 		if (proximo->valor == valor) {
 			aux->prox = proximo->prox;
 			free(proximo);
-			return;
+			encontrado = true;
+			break;
 		}
 		aux = aux->prox;
 	}
-	cout << "Valor nao encontrado \n";
+	if (!encontrado) cout << "Valor nao encontrado \n";
 }
 
 void buscarElemento()
