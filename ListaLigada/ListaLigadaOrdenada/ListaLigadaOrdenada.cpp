@@ -18,6 +18,7 @@ void inserirElemento();
 void excluirElemento();
 void buscarElemento();
 NO* posicaoElemento(int numero);
+NO* ultimoElemento();
 //--------------------------
 
 
@@ -70,8 +71,8 @@ void menu()
 
 void inicializar()
 {
-	// se a lista j� possuir elementos
-// libera a memoria ocupada
+	// se a lista já possuir elementos
+	// libera a memoria ocupada
 	NO* aux = primeiro;
 	while (aux != NULL) {
 		NO* paraExcluir = aux;
@@ -125,29 +126,104 @@ void inserirElemento()
 	cin >> novo->valor;
 	novo->prox = NULL;
 
+	NO* numeroExiste = posicaoElemento(novo->valor);
+
+	if (numeroExiste != NULL)
+	{
+		cout << "O numero digitado ja esta presente na lista. Digite outro. \n";
+		return;
+	}
+
+
 	if (primeiro == NULL)
 	{
 		primeiro = novo;
 	}
 	else
 	{
-		// procura o final da lista
-		NO* aux = primeiro;
-		while (aux->prox != NULL) {
-			aux = aux->prox;
+		NO* ultimo = ultimoElemento();
+		ultimo->prox = novo;
+	}
+
+	// 2 5 8 4 6 3 7
+
+	NO* aux = primeiro;
+	while (aux->prox != NULL) {
+		if (aux->valor > novo->valor)
+		{
+			int sub = novo->valor;
+			novo->valor = aux->valor;
+			aux->valor = sub;
 		}
-		aux->prox = novo;
+
+		aux = aux->prox;
 	}
 }
 
+// Busca o elemento e o exclui caso esteja na lista
 void excluirElemento()
 {
+	int valor;
+	NO* aux;
 
+	cout << "Digite o valor que quer excluir: ";
+	cin >> valor;
+
+	aux = primeiro;
+	while (aux->prox != NULL) {
+		NO* proximo = aux->prox;
+
+		if (primeiro->valor == valor) {
+			free(primeiro);
+			primeiro = proximo;
+			return;
+		}
+
+		if (proximo->valor == valor) {
+			aux->prox = proximo->prox;
+			free(proximo);
+			return;
+		}
+		aux = aux->prox;
+	}
+	cout << "Valor nao encontrado \n";
 }
 
 void buscarElemento()
 {
+	int valor;
+	cout << "Digite o valor que deseja buscar: ";
+	cin >> valor;
 
+	NO* elemento = posicaoElemento(valor);
+
+	if (elemento == NULL) {
+		cout << "Nenhum elemento foi encontrado com esse valor. \n";
+		return;
+	}
+
+	cout << elemento->valor << " encontrado na posicaoo: " << elemento->prox << endl;
 }
 
+// retorna um ponteiro para o elemento buscado
+// ou NULL se o elemento não estiver na lista
+NO* posicaoElemento(int numero)
+{
+	NO* aux = primeiro;
+	while (aux != NULL) {
+		if (aux->valor == numero)
+		{
+			break;
+		}
+		aux = aux->prox;
+	}
+	return aux;
+}
 
+NO* ultimoElemento() {
+	NO* aux = primeiro;
+	while (aux->prox != NULL) {
+		aux = aux->prox;
+	}
+	return aux;
+}
